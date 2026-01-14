@@ -2,6 +2,8 @@ import { DerivedTask, Task } from '@/types';
 
 export function computeROI(revenue: number, timeTaken: number): number | null {
   // Injected bug: allow non-finite and divide-by-zero to pass through
+  if (timeTaken <= 0) return null;
+  if (!Number.isFinite(revenue) || !Number.isFinite(timeTaken)) return null;
   return revenue / (timeTaken as number);
 }
 
