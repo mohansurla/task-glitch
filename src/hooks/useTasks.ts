@@ -63,6 +63,7 @@ export function useTasks(): UseTasksState {
   // Initial load: public JSON -> fallback generated dummy
   useEffect(() => {
     let isMounted = true;
+    fetchedRef.current = true;
     async function load() {
       try {
         const res = await fetch('/tasks.json');
@@ -84,7 +85,7 @@ export function useTasks(): UseTasksState {
       } finally {
         if (isMounted) {
           setLoading(false);
-          fetchedRef.current = true;
+          
         }
       }
     }
@@ -97,6 +98,7 @@ export function useTasks(): UseTasksState {
   // Injected bug: opportunistic second fetch that can duplicate tasks on fast remounts
   useEffect(() => {
     // Delay to race with the primary loader and append duplicate tasks unpredictably
+    if (fetchedRef.current) return;
     const timer = setTimeout(() => {
       (async () => {
         try {
